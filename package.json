@@ -1,0 +1,28 @@
+{
+  "name": "adplayer",
+  "version": "5.0.0",
+  "description": "A fully functional, fast js player",
+  "main": "index.js",
+  "scripts": {
+    "production":"node esbuild.prod.js",
+    "start":"node esbuild.js"
+  },
+  "author": "Nikolaos Panagopoulos",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^0.28.11",
+    "esbuild": "^0.13.14",
+    "file-loader": "^1.1.11",
+    "mini-css-extract-plugin": "^0.4.5",
+    "style-loader": "^0.21.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^5.64.1",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.5.0",
+    "webpack-merge": "^5.8.0"
+  }
+}
