@@ -2,8 +2,8 @@ export default function adsLoader() {
     this.createAdDisplayContainer()
     var adsLoader = new google.ima.AdsLoader(this.adDisplayContainer)
     // Listen and respond to ads loaded and error events.
-     adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, ()=>console.log('loaded'),
-         false)
+    adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this),
+        false)
 
     adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,

@@ -18627,6 +18627,7 @@
     `;
     this.videoElement?.insertAdjacentHTML("afterend", uiHtml);
     this.adContainer = document.getElementById("adContainer");
+    this.playBtn = document.getElementById("play-btn");
   }
 
   // src/helpers/createScripts.js
@@ -18668,7 +18669,7 @@
   function adsLoader() {
     this.createAdDisplayContainer();
     var adsLoader2 = new google.ima.AdsLoader(this.adDisplayContainer);
-    adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, () => console.log("loaded"), false);
+    adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this), false);
     adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => console.log("error"), false);
     var contentEndedListener = function() {
       adsLoader2.contentComplete();
@@ -18688,8 +18689,27 @@
   function imaInit() {
     const init = () => {
       this.adsLoader();
+      this.playBtn.addEventListener("click", playAds);
+    };
+    var adsManager = this.adsManager;
+    var playAds = () => {
+      this.adDisplayContainer.initialize();
+      try {
+        this.adsManager.start();
+      } catch (adError) {
+        console.error(adError, "error");
+      }
     };
     init();
+  }
+
+  // src/advertising/setupIma/adsManager.js
+  function onAdsManagerLoaded(adsManagerLoadedEvent) {
+    var adsRenderingSettings = new google.ima.AdsRenderingSettings();
+    adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+    this.adsManager = adsManagerLoadedEvent.getAdsManager(this.videoElement, adsRenderingSettings);
+    this.adsManager.init(500, 500, google.ima.ViewMode.NORMAL);
+    console.log(this.adsManager);
   }
 
   // src/class/Player.js
@@ -18701,6 +18721,7 @@
       this.createPlayer();
       this.imaInit();
     }
+    onAdsManagerLoaded = onAdsManagerLoaded;
     imaInit = imaInit;
     adsLoader = adsLoader;
     createAdDisplayContainer = createAdDisplayContainer;

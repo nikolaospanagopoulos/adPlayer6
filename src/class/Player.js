@@ -6,18 +6,20 @@ import createAdDisplayContainer from "../advertising/createAdvertisingContainer"
 import '../../out/ima/ima3'
 import adsLoader from "../advertising/adsLoader"
 import imaInit from "../advertising/setupIma/imaInit"
+import onAdsManagerLoaded from "../advertising/setupIma/adsManager"
 export class Player {
 
-    constructor(options){
-        
+    constructor(options) {
+
         this.options = options
         //create a link for the font awesome css and for custom css
-        this.createLink('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css','stylesheet')
-        this.createLink('../../out/style/style.css','stylesheet')
+        this.createLink('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css', 'stylesheet')
+        this.createLink('../../out/style/style.css', 'stylesheet')
         this.createPlayer()
         this.imaInit()
     }
 
+    onAdsManagerLoaded = onAdsManagerLoaded
     imaInit = imaInit
     adsLoader = adsLoader
     createAdDisplayContainer = createAdDisplayContainer
