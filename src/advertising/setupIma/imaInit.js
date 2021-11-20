@@ -3,6 +3,7 @@ export default function imaInit() {
         this.adsLoader()
 
         this.playBtn.addEventListener('click', playAds)
+        this.adContainer.addEventListener('click', playAds)
     }
 
 
@@ -14,6 +15,8 @@ export default function imaInit() {
         try {
             // Initialize the ads manager. Ad rules playlist will start at this time.
             this.adsManager.start();
+            this.playBtn.removeEventListener('click', playAds)
+            this.adContainer.removeEventListener('click', playAds)
         } catch (adError) {
             console.error(adError, 'error')
             // this.videoElement.play();

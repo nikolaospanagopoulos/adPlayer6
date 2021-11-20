@@ -18690,12 +18690,15 @@
     const init = () => {
       this.adsLoader();
       this.playBtn.addEventListener("click", playAds);
+      this.adContainer.addEventListener("click", playAds);
     };
     var adsManager = this.adsManager;
     var playAds = () => {
       this.adDisplayContainer.initialize();
       try {
         this.adsManager.start();
+        this.playBtn.removeEventListener("click", playAds);
+        this.adContainer.removeEventListener("click", playAds);
       } catch (adError) {
         console.error(adError, "error");
       }
@@ -18703,13 +18706,63 @@
     init();
   }
 
+  // src/helpers/styles.js
+  function changeClassname(element, oldClassname, newClassname) {
+    var DOMelement;
+    if (typeof oldClassname == "string" && typeof newClassname == "string") {
+      if (element instanceof Element) {
+        DOMelement = element;
+      } else if (typeof element == "string") {
+        DOMelement = document.querySelector(element);
+      }
+      DOMelement.classList.remove(oldClassname);
+      DOMelement.classList.add(newClassname);
+    }
+  }
+
+  // src/helpers/videoEvents.js
+  function resumeVideoAd(adsManager) {
+    console.log(12345);
+    adsManager.resume();
+  }
+
+  // src/advertising/adStarted.js
+  function adStarted() {
+    console.log(this.adsManager);
+    changeClassname(this.playBtn, "fa-play", "fa-pause");
+    this.playBtn.addEventListener("click", () => this.adsManager.pause());
+  }
+
+  // src/advertising/setupIma/dimensions.js
+  function getDimentions(element) {
+    element.getBoundingClientRect();
+    var dimensionsObj = {
+      height: element.getBoundingClientRect().height,
+      width: element.getBoundingClientRect().width
+    };
+    return dimensionsObj;
+  }
+
   // src/advertising/setupIma/adsManager.js
   function onAdsManagerLoaded(adsManagerLoadedEvent) {
     var adsRenderingSettings = new google.ima.AdsRenderingSettings();
     adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
     this.adsManager = adsManagerLoadedEvent.getAdsManager(this.videoElement, adsRenderingSettings);
-    this.adsManager.init(500, 500, google.ima.ViewMode.NORMAL);
-    console.log(this.adsManager);
+    var dimentions = getDimentions(this.parentElement);
+    this.adsManager.init(dimentions.width, dimentions.height, google.ima.ViewMode.NORMAL);
+    var resume = resumeVideoAd.bind(this, this.adsManager);
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
+      console.log("lOADED");
+    });
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
+      changeClassname(this.playBtn, "fa-pause", "fa-play");
+      this.playBtn.addEventListener("click", resume);
+    });
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
+      changeClassname(this.playBtn, "fa-play", "fa-pause");
+      this.playBtn.removeEventListener("click", resume);
+    });
   }
 
   // src/class/Player.js
