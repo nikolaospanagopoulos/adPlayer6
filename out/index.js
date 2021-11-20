@@ -18628,6 +18628,7 @@
     this.videoElement?.insertAdjacentHTML("afterend", uiHtml);
     this.adContainer = document.getElementById("adContainer");
     this.playBtn = document.getElementById("play-btn");
+    this.progressBar = document.querySelector(".progress-bar");
   }
 
   // src/helpers/createScripts.js
@@ -18694,14 +18695,15 @@
     };
     var adsManager = this.adsManager;
     var playAds = () => {
-      this.adDisplayContainer.initialize();
       try {
+        this.adDisplayContainer.initialize();
         this.adsManager.start();
-        this.playBtn.removeEventListener("click", playAds);
-        this.adContainer.removeEventListener("click", playAds);
       } catch (adError) {
         console.error(adError, "error");
+        this.videoElement.play();
       }
+      this.playBtn.removeEventListener("click", playAds);
+      this.adContainer.removeEventListener("click", playAds);
     };
     init();
   }
@@ -18724,6 +18726,11 @@
   function resumeVideoAd(adsManager) {
     console.log(12345);
     adsManager.resume();
+  }
+
+  // src/advertising/adProgress.js
+  function adProgressBarWidth(duration, currentTime) {
+    return currentTime / duration * 100;
   }
 
   // src/advertising/adStarted.js
@@ -18751,17 +18758,30 @@
     var dimentions = getDimentions(this.parentElement);
     this.adsManager.init(dimentions.width, dimentions.height, google.ima.ViewMode.NORMAL);
     var resume = resumeVideoAd.bind(this, this.adsManager);
+    var duration;
+    var currentTime;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
       console.log("lOADED");
+      console.log(e.getAdData());
+      duration = e.getAdData().duration;
+      console.log(duration);
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       changeClassname(this.playBtn, "fa-pause", "fa-play");
       this.playBtn.addEventListener("click", resume);
     });
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
+      currentTime = e.getAdData().currentTime;
+      console.log(adProgressBarWidth(duration, currentTime));
+      this.progressBar.style.width = adProgressBarWidth(duration, currentTime) + "%";
+    });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
       changeClassname(this.playBtn, "fa-play", "fa-pause");
       this.playBtn.removeEventListener("click", resume);
+    });
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
+      this.videoElement.play();
     });
   }
 

@@ -1,4 +1,5 @@
 export default function imaInit() {
+    
     const init = () => {
         this.adsLoader()
 
@@ -11,18 +12,19 @@ export default function imaInit() {
 
     var playAds = () => {
 
-        this.adDisplayContainer.initialize()
+       
         try {
+            this.adDisplayContainer.initialize()
             // Initialize the ads manager. Ad rules playlist will start at this time.
             this.adsManager.start();
-            this.playBtn.removeEventListener('click', playAds)
-            this.adContainer.removeEventListener('click', playAds)
         } catch (adError) {
             console.error(adError, 'error')
-            // this.videoElement.play();
+            this.videoElement.play();
         }
+        this.playBtn.removeEventListener('click', playAds)
+        this.adContainer.removeEventListener('click', playAds)
     }
-
+     
 
     init()
 }

@@ -1,5 +1,6 @@
 import changeClassname from "../../helpers/styles";
 import { resumeVideoAd } from "../../helpers/videoEvents";
+import adProgressBarWidth from "../adProgress";
 import adStarted from "../adStarted";
 import getDimentions from "./dimensions";
 
@@ -24,25 +25,36 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     //so we use a variable
     var resume = resumeVideoAd.bind(this, this.adsManager)
 
-
+    var duration;
+    var currentTime;
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this))
 
 
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
         console.log('lOADED')
+        console.log(e.getAdData())
+        duration = e.getAdData().duration
+        console.log(duration)
     })
 
     
-
-
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
         changeClassname(this.playBtn,'fa-pause','fa-play')
         this.playBtn.addEventListener('click', resume)
     })
 
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
+        currentTime =  e.getAdData().currentTime
+        console.log(adProgressBarWidth(duration,currentTime))
+        this.progressBar.style.width = adProgressBarWidth(duration,currentTime) + '%'
+    })
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
         changeClassname(this.playBtn,'fa-play','fa-pause')
         this.playBtn.removeEventListener('click', resume)
+    })
+
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
+       this.videoElement.play()
     })
 }
