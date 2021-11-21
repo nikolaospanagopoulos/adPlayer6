@@ -18629,6 +18629,9 @@
     this.adContainer = document.getElementById("adContainer");
     this.playBtn = document.getElementById("play-btn");
     this.progressBar = document.querySelector(".progress-bar");
+    this.volumeRange = document.querySelector(".volume-range");
+    this.volumeBar = document.querySelector(".volume-bar");
+    this.volumeIconSymbol = document.getElementById("volume-icon");
   }
 
   // src/helpers/createScripts.js
@@ -18766,6 +18769,7 @@
       console.log(e.getAdData());
       duration = e.getAdData().duration;
       console.log(duration);
+      this.setVolume();
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       changeClassname(this.playBtn, "fa-pause", "fa-play");
@@ -18773,7 +18777,6 @@
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
       currentTime = e.getAdData().currentTime;
-      console.log(adProgressBarWidth(duration, currentTime));
       this.progressBar.style.width = adProgressBarWidth(duration, currentTime) + "%";
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
@@ -18785,6 +18788,51 @@
     });
   }
 
+  // src/common/setVolume.js
+  function setVolume() {
+    var oldVolume = this.adsManager.getVolume() || 1;
+    console.log(this);
+    this.volumeRange.addEventListener("click", (e) => {
+      var newVolume = e.offsetX / this.volumeRange.offsetWidth;
+      console.log(newVolume);
+      if (newVolume < 0.1)
+        newVolume = 0;
+      if (newVolume > 0.9)
+        newVolume = 1;
+      this.volumeBar.style.width = `${newVolume * 100}px`;
+      this.adsManager.setVolume(newVolume);
+      this.videoElement.volume = newVolume;
+      oldVolume = newVolume;
+    });
+    this.volumeIconSymbol.addEventListener("click", () => {
+      this.volumeIconSymbol.className = "";
+      if (this.videoElement.volume > 0) {
+        oldVolume = this.videoElement.volume;
+        this.videoElement.volume = 0;
+        this.adsManager.setVolume(0);
+        this.volumeIconSymbol.classList.add("fas", "fa-volume-mute");
+        this.volumeBar.style.width = 0;
+      } else {
+        this.adsManager.setVolume(oldVolume);
+        this.videoElement.volume = oldVolume;
+        this.volumeBar.style.width = `${oldVolume * 100}%`;
+        this.changeVolumeIcon(oldVolume);
+      }
+    });
+  }
+
+  // src/helpers/changeVolumeIcon.js
+  function changeVolumeIcon(newVolume) {
+    this.volumeIconSymbol.className = "";
+    if (newVolume > 0.7) {
+      this.volumeIconSymbol.classList.add("fas", "fa-volume-up");
+    } else if (newVolume <= 0.7 && newVolume > 0) {
+      this.volumeIconSymbol.classList.add("fas", "fa-volume-down");
+    } else if (newVolume == 0) {
+      this.volumeIconSymbol.classList.add("fas", "fa-volume-mute");
+    }
+  }
+
   // src/class/Player.js
   var Player = class {
     constructor(options) {
@@ -18794,6 +18842,8 @@
       this.createPlayer();
       this.imaInit();
     }
+    changeVolumeIcon = changeVolumeIcon;
+    setVolume = setVolume;
     onAdsManagerLoaded = onAdsManagerLoaded;
     imaInit = imaInit;
     adsLoader = adsLoader;

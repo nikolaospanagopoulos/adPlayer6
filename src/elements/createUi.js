@@ -49,5 +49,7 @@ export default function createUi() {
     this.adContainer = document.getElementById('adContainer')
     this.playBtn = document.getElementById('play-btn')
     this.progressBar = document.querySelector('.progress-bar')
-    
+    this.volumeRange = document.querySelector('.volume-range')
+    this.volumeBar = document.querySelector('.volume-bar')
+    this.volumeIconSymbol = document.getElementById('volume-icon')
 }

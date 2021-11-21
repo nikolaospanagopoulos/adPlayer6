@@ -36,25 +36,26 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         console.log(e.getAdData())
         duration = e.getAdData().duration
         console.log(duration)
+        // this.volumeRange.addEventListener('click',this.setVolume.bind(this))
+        this.setVolume()
     })
 
-    
+
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
-        changeClassname(this.playBtn,'fa-pause','fa-play')
+        changeClassname(this.playBtn, 'fa-pause', 'fa-play')
         this.playBtn.addEventListener('click', resume)
     })
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
-        currentTime =  e.getAdData().currentTime
-        console.log(adProgressBarWidth(duration,currentTime))
-        this.progressBar.style.width = adProgressBarWidth(duration,currentTime) + '%'
+        currentTime = e.getAdData().currentTime
+        this.progressBar.style.width = adProgressBarWidth(duration, currentTime) + '%'
     })
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
-        changeClassname(this.playBtn,'fa-play','fa-pause')
+        changeClassname(this.playBtn, 'fa-play', 'fa-pause')
         this.playBtn.removeEventListener('click', resume)
     })
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
-       this.videoElement.play()
+        this.videoElement.play()
     })
 }
