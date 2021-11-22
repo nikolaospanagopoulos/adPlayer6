@@ -1,3 +1,4 @@
+import playPauseContent from "../../content/play";
 import changeClassname from "../../helpers/styles";
 import { resumeVideoAd } from "../../helpers/videoEvents";
 import adProgressBarWidth from "../adProgress";
@@ -24,7 +25,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     //every time we bind a function we create a new function reference making it imposible to remove as a listener
     //so we use a variable
     var resume = resumeVideoAd.bind(this, this.adsManager)
-
+    var playPauseContentFn = this.playPauseContent.bind(this)
     var duration;
     var currentTime;
 
@@ -36,10 +37,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         console.log(e.getAdData())
         duration = e.getAdData().duration
         console.log(duration)
-        // this.volumeRange.addEventListener('click',this.setVolume.bind(this))
         this.setVolume()
     })
-
+    
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
         changeClassname(this.playBtn, 'fa-pause', 'fa-play')
@@ -60,5 +60,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     })
 
 
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,()=>console.log('1234567'))
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,()=>{
+        console.log('resume content')
+        this.playBtn.addEventListener('click', playPauseContentFn)
+        
+    })
 }

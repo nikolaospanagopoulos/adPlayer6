@@ -9,6 +9,7 @@ import imaInit from "../advertising/setupIma/imaInit"
 import onAdsManagerLoaded from "../advertising/setupIma/adsManager"
 import setVolume from "../common/setVolume"
 import changeVolumeIcon from "../helpers/changeVolumeIcon"
+import playPauseContent from "../content/play"
 export class Player {
 
     constructor(options) {
@@ -20,7 +21,7 @@ export class Player {
         this.createPlayer()
         this.imaInit()
     }
-
+    playPauseContent = playPauseContent
     changeVolumeIcon = changeVolumeIcon
     setVolume = setVolume
     onAdsManagerLoaded = onAdsManagerLoaded

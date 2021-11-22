@@ -18674,7 +18674,10 @@
     this.createAdDisplayContainer();
     var adsLoader2 = new google.ima.AdsLoader(this.adDisplayContainer);
     adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this), false);
-    adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, () => console.log("error"), false);
+    adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, (e) => {
+      console.error(e.g.g.errorMessage);
+      this.playBtn.addEventListener("click", () => this.playPauseContent());
+    }, false);
     var contentEndedListener = function() {
       adsLoader2.contentComplete();
     };
@@ -18700,10 +18703,9 @@
     var playAds = () => {
       try {
         this.adDisplayContainer.initialize();
-        this.adsManager.start();
+        this.adsManager?.start();
       } catch (adError) {
         console.error(adError, "error");
-        this.videoElement.play();
       }
       this.playBtn.removeEventListener("click", playAds);
       this.adContainer.removeEventListener("click", playAds);
@@ -18722,6 +18724,17 @@
       }
       DOMelement.classList.remove(oldClassname);
       DOMelement.classList.add(newClassname);
+    }
+  }
+
+  // src/content/play.js
+  function playPauseContent() {
+    if (this.videoElement.paused) {
+      changeClassname(this.playBtn, "fa-play", "fa-pause");
+      this.videoElement.play();
+    } else {
+      changeClassname(this.playBtn, "fa-pause", "fa-play");
+      this.videoElement.pause();
     }
   }
 
@@ -18761,6 +18774,7 @@
     var dimentions = getDimentions(this.parentElement);
     this.adsManager.init(dimentions.width, dimentions.height, google.ima.ViewMode.NORMAL);
     var resume = resumeVideoAd.bind(this, this.adsManager);
+    var playPauseContentFn = this.playPauseContent.bind(this);
     var duration;
     var currentTime;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
@@ -18786,7 +18800,10 @@
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
       this.videoElement.play();
     });
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => console.log("1234567"));
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
+      console.log("resume content");
+      this.playBtn.addEventListener("click", playPauseContentFn);
+    });
   }
 
   // src/common/setVolume.js
@@ -18843,6 +18860,7 @@
       this.createPlayer();
       this.imaInit();
     }
+    playPauseContent = playPauseContent;
     changeVolumeIcon = changeVolumeIcon;
     setVolume = setVolume;
     onAdsManagerLoaded = onAdsManagerLoaded;

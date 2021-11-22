@@ -7,7 +7,11 @@ export default function adsLoader() {
 
     adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,
-        () => console.log('error'),
+        (e) => {
+            console.error(e.g.g.errorMessage)
+            this.playBtn.addEventListener('click', () => this.playPauseContent())
+
+        },
         false
     );
 
