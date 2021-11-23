@@ -11,6 +11,7 @@ import setVolume from "../common/setVolume"
 import changeVolumeIcon from "../helpers/changeVolumeIcon"
 import playPauseContent from "../content/play"
 import { setProgress, timeUpdateProgressBar } from "../content/progressBar"
+import onAdError from "../advertising/onAdError"
 
 export class Player {
 
@@ -24,6 +25,7 @@ export class Player {
         this.imaInit()
     }
 
+    onAdError = onAdError
     timeUpdateProgressBar = timeUpdateProgressBar
     setProgress = setProgress
     playPauseContent = playPauseContent

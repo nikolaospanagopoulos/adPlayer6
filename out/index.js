@@ -18677,10 +18677,8 @@
     adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this), false);
     this.setVolume();
     adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, (e) => {
-      this.playBtn.addEventListener("click", () => this.playPauseContent());
-      this.adContainer.addEventListener("click", () => this.playPauseContent());
-      this.videoElement.addEventListener("timeupdate", this.timeUpdateProgressBar.bind(this));
-      this.progressRange.addEventListener("click", this.setProgress.bind(this));
+      console.error(e.g.g.errorMessage);
+      this.onAdError();
     }, false);
     var contentEndedListener = function() {
       adsLoader2.contentComplete();
@@ -18876,6 +18874,14 @@
     this.videoElement.currentTime = newTime * this.videoElement.duration;
   }
 
+  // src/advertising/onAdError.js
+  function onAdError() {
+    this.playBtn.addEventListener("click", () => this.playPauseContent());
+    this.adContainer.addEventListener("click", () => this.playPauseContent());
+    this.videoElement.addEventListener("timeupdate", this.timeUpdateProgressBar.bind(this));
+    this.progressRange.addEventListener("click", this.setProgress.bind(this));
+  }
+
   // src/class/Player.js
   var Player = class {
     constructor(options) {
@@ -18885,6 +18891,7 @@
       this.createPlayer();
       this.imaInit();
     }
+    onAdError = onAdError;
     timeUpdateProgressBar = timeUpdateProgressBar;
     setProgress = setProgress;
     playPauseContent = playPauseContent;

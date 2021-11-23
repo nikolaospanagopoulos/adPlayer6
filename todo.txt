@@ -1,4 +1,4 @@
 1.ad error checking for ad and content volume =========> done
 2. make a function for content playing on error and on complete ad ==============> done
-3. progress bar for content
-4. better ads loader
+3. progress bar for content =======================>done
+4. better ads loader ====================> done

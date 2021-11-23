@@ -9,11 +9,8 @@ export default function adsLoader() {
     adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,
         (e) => {
-            //  console.error(e.g.g.errorMessage)
-            this.playBtn.addEventListener('click', () => this.playPauseContent())
-            this.adContainer.addEventListener('click', () => this.playPauseContent())
-            this.videoElement.addEventListener('timeupdate', this.timeUpdateProgressBar.bind(this))
-            this.progressRange.addEventListener('click', this.setProgress.bind(this))
+            console.error(e.g.g.errorMessage)
+            this.onAdError()
         },
         false
     );
