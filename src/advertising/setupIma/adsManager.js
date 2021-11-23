@@ -37,7 +37,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         console.log(e.getAdData())
         duration = e.getAdData().duration
         console.log(duration)
-        this.setVolume()
+        
     })
     
 
@@ -58,7 +58,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
         this.videoElement.play()
     })
-
+    
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,()=>{
         console.log('resume content')

@@ -18674,6 +18674,7 @@
     this.createAdDisplayContainer();
     var adsLoader2 = new google.ima.AdsLoader(this.adDisplayContainer);
     adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this), false);
+    this.setVolume();
     adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, (e) => {
       console.error(e.g.g.errorMessage);
       this.playBtn.addEventListener("click", () => this.playPauseContent());
@@ -18783,7 +18784,6 @@
       console.log(e.getAdData());
       duration = e.getAdData().duration;
       console.log(duration);
-      this.setVolume();
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       changeClassname(this.playBtn, "fa-pause", "fa-play");
@@ -18808,8 +18808,7 @@
 
   // src/common/setVolume.js
   function setVolume() {
-    var oldVolume = this.adsManager.getVolume() || 1;
-    console.log(this);
+    var oldVolume = this.adsManager?.getVolume() || 1;
     this.volumeRange.addEventListener("click", (e) => {
       var newVolume = e.offsetX / this.volumeRange.offsetWidth;
       console.log(newVolume);
@@ -18818,8 +18817,9 @@
       if (newVolume > 0.9)
         newVolume = 1;
       this.volumeBar.style.width = `${newVolume * 100}px`;
-      this.adsManager.setVolume(newVolume);
+      this.adsManager?.setVolume(newVolume);
       this.videoElement.volume = newVolume;
+      this.changeVolumeIcon(newVolume);
       oldVolume = newVolume;
     });
     this.volumeIconSymbol.addEventListener("click", () => {
@@ -18827,11 +18827,11 @@
       if (this.videoElement.volume > 0) {
         oldVolume = this.videoElement.volume;
         this.videoElement.volume = 0;
-        this.adsManager.setVolume(0);
+        this.adsManager?.setVolume(0);
         this.volumeIconSymbol.classList.add("fas", "fa-volume-mute");
         this.volumeBar.style.width = 0;
       } else {
-        this.adsManager.setVolume(oldVolume);
+        this.adsManager?.setVolume(oldVolume);
         this.videoElement.volume = oldVolume;
         this.volumeBar.style.width = `${oldVolume * 100}%`;
         this.changeVolumeIcon(oldVolume);

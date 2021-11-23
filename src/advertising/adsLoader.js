@@ -4,7 +4,8 @@ export default function adsLoader() {
     // Listen and respond to ads loaded and error events.
     adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this),
         false)
-
+    //put set volume here so that it can be used with ads, ad error, content
+    this.setVolume()
     adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,
         (e) => {
