@@ -48,6 +48,7 @@ export default function createUi() {
     this.videoElement?.insertAdjacentHTML('afterend',uiHtml)
     this.adContainer = document.getElementById('adContainer')
     this.playBtn = document.getElementById('play-btn')
+    this.progressRange = document.querySelector('.progress-range')
     this.progressBar = document.querySelector('.progress-bar')
     this.volumeRange = document.querySelector('.volume-range')
     this.volumeBar = document.querySelector('.volume-bar')

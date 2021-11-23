@@ -10,6 +10,8 @@ import onAdsManagerLoaded from "../advertising/setupIma/adsManager"
 import setVolume from "../common/setVolume"
 import changeVolumeIcon from "../helpers/changeVolumeIcon"
 import playPauseContent from "../content/play"
+import { setProgress, timeUpdateProgressBar } from "../content/progressBar"
+
 export class Player {
 
     constructor(options) {
@@ -21,6 +23,9 @@ export class Player {
         this.createPlayer()
         this.imaInit()
     }
+
+    timeUpdateProgressBar = timeUpdateProgressBar
+    setProgress = setProgress
     playPauseContent = playPauseContent
     changeVolumeIcon = changeVolumeIcon
     setVolume = setVolume

@@ -18628,6 +18628,7 @@
     this.videoElement?.insertAdjacentHTML("afterend", uiHtml);
     this.adContainer = document.getElementById("adContainer");
     this.playBtn = document.getElementById("play-btn");
+    this.progressRange = document.querySelector(".progress-range");
     this.progressBar = document.querySelector(".progress-bar");
     this.volumeRange = document.querySelector(".volume-range");
     this.volumeBar = document.querySelector(".volume-bar");
@@ -18776,6 +18777,8 @@
     this.adsManager.init(dimentions.width, dimentions.height, google.ima.ViewMode.NORMAL);
     var resume = resumeVideoAd.bind(this, this.adsManager);
     var playPauseContentFn = this.playPauseContent.bind(this);
+    var setProgress2 = this.setProgress.bind(this);
+    var timeUpdateContent = this.timeUpdateProgressBar.bind(this);
     var duration;
     var currentTime;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
@@ -18803,6 +18806,8 @@
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
       console.log("resume content");
       this.playBtn.addEventListener("click", playPauseContentFn);
+      this.videoElement.addEventListener("timeupdate", timeUpdateContent);
+      this.progressRange.addEventListener("click", setProgress2);
     });
   }
 
@@ -18851,6 +18856,17 @@
     }
   }
 
+  // src/content/progressBar.js
+  function timeUpdateProgressBar() {
+    this.progressBar.style.width = `${this.videoElement.currentTime / this.videoElement.duration * 100}%`;
+  }
+  function setProgress(e) {
+    var newTime = e.offsetX / this.progressRange.offsetWidth;
+    console.log("new time set at " + newTime);
+    this.progressBar.style.width = newTime * 100 + "%";
+    this.videoElement.currentTime = newTime * this.videoElement.duration;
+  }
+
   // src/class/Player.js
   var Player = class {
     constructor(options) {
@@ -18860,6 +18876,8 @@
       this.createPlayer();
       this.imaInit();
     }
+    timeUpdateProgressBar = timeUpdateProgressBar;
+    setProgress = setProgress;
     playPauseContent = playPauseContent;
     changeVolumeIcon = changeVolumeIcon;
     setVolume = setVolume;

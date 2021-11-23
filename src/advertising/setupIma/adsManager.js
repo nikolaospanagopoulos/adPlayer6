@@ -26,6 +26,8 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     //so we use a variable
     var resume = resumeVideoAd.bind(this, this.adsManager)
     var playPauseContentFn = this.playPauseContent.bind(this)
+    var setProgress = this.setProgress.bind(this)
+    var timeUpdateContent = this.timeUpdateProgressBar.bind(this)
     var duration;
     var currentTime;
 
@@ -37,9 +39,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         console.log(e.getAdData())
         duration = e.getAdData().duration
         console.log(duration)
-        
+
     })
-    
+
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
         changeClassname(this.playBtn, 'fa-pause', 'fa-play')
@@ -58,11 +60,12 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
         this.videoElement.play()
     })
-    
 
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,()=>{
+
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
         console.log('resume content')
         this.playBtn.addEventListener('click', playPauseContentFn)
-        
+        this.videoElement.addEventListener('timeupdate', timeUpdateContent)
+        this.progressRange.addEventListener('click', setProgress)
     })
 }
