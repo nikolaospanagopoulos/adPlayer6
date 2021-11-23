@@ -4,6 +4,7 @@ export function timeUpdateProgressBar() {
 
 
 export function setProgress(e) {
+    console.log(this.videoElement)
     var newTime = e.offsetX / this.progressRange.offsetWidth
     console.log('new time set at ' + newTime)
 

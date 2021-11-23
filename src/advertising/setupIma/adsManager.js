@@ -1,4 +1,3 @@
-import playPauseContent from "../../content/play";
 import changeClassname from "../../helpers/styles";
 import { resumeVideoAd } from "../../helpers/videoEvents";
 import adProgressBarWidth from "../adProgress";
@@ -61,11 +60,18 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         this.videoElement.play()
     })
 
-
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
         console.log('resume content')
         this.playBtn.addEventListener('click', playPauseContentFn)
         this.videoElement.addEventListener('timeupdate', timeUpdateContent)
         this.progressRange.addEventListener('click', setProgress)
+    })
+
+    //remove event listeners after content stops incase there are more ads
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
+        console.log('pause content')
+        this.playBtn.removeEventListener('click', playPauseContentFn)
+        this.videoElement.removeEventListener('timeupdate', timeUpdateContent)
+        this.progressRange.removeEventListener('click', setProgress)
     })
 }

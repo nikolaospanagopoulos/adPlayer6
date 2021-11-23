@@ -18677,8 +18677,10 @@
     adsLoader2.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, this.onAdsManagerLoaded.bind(this), false);
     this.setVolume();
     adsLoader2.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, (e) => {
-      console.error(e.g.g.errorMessage);
       this.playBtn.addEventListener("click", () => this.playPauseContent());
+      this.adContainer.addEventListener("click", () => this.playPauseContent());
+      this.videoElement.addEventListener("timeupdate", this.timeUpdateProgressBar.bind(this));
+      this.progressRange.addEventListener("click", this.setProgress.bind(this));
     }, false);
     var contentEndedListener = function() {
       adsLoader2.contentComplete();
@@ -18726,17 +18728,6 @@
       }
       DOMelement.classList.remove(oldClassname);
       DOMelement.classList.add(newClassname);
-    }
-  }
-
-  // src/content/play.js
-  function playPauseContent() {
-    if (this.videoElement.paused) {
-      changeClassname(this.playBtn, "fa-play", "fa-pause");
-      this.videoElement.play();
-    } else {
-      changeClassname(this.playBtn, "fa-pause", "fa-play");
-      this.videoElement.pause();
     }
   }
 
@@ -18809,6 +18800,12 @@
       this.videoElement.addEventListener("timeupdate", timeUpdateContent);
       this.progressRange.addEventListener("click", setProgress2);
     });
+    this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
+      console.log("pause content");
+      this.playBtn.removeEventListener("click", playPauseContentFn);
+      this.videoElement.removeEventListener("timeupdate", timeUpdateContent);
+      this.progressRange.removeEventListener("click", setProgress2);
+    });
   }
 
   // src/common/setVolume.js
@@ -18856,11 +18853,23 @@
     }
   }
 
+  // src/content/play.js
+  function playPauseContent() {
+    if (this.videoElement.paused) {
+      changeClassname(this.playBtn, "fa-play", "fa-pause");
+      this.videoElement.play();
+    } else {
+      changeClassname(this.playBtn, "fa-pause", "fa-play");
+      this.videoElement.pause();
+    }
+  }
+
   // src/content/progressBar.js
   function timeUpdateProgressBar() {
     this.progressBar.style.width = `${this.videoElement.currentTime / this.videoElement.duration * 100}%`;
   }
   function setProgress(e) {
+    console.log(this.videoElement);
     var newTime = e.offsetX / this.progressRange.offsetWidth;
     console.log("new time set at " + newTime);
     this.progressBar.style.width = newTime * 100 + "%";
