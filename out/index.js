@@ -18633,6 +18633,8 @@
     this.volumeRange = document.querySelector(".volume-range");
     this.volumeBar = document.querySelector(".volume-bar");
     this.volumeIconSymbol = document.getElementById("volume-icon");
+    this.timeElapsedElement = document.querySelector(".time-elapsed");
+    this.timeDurationElement = document.querySelector(".time-duration");
   }
 
   // src/helpers/createScripts.js
@@ -18715,6 +18717,24 @@
     init();
   }
 
+  // src/helpers/timeDisplayHelper.js
+  function timeDesplayHelper(minutes, seconds) {
+    var convertedMinutes = minutes > 9 ? minutes : `0${minutes}`;
+    var convertedSeconds = seconds > 9 ? seconds : `0${seconds}`;
+    return {
+      convertedMinutes,
+      convertedSeconds
+    };
+  }
+
+  // src/common/timeDisplay.js
+  function calculateTime(time) {
+    var minutes = Math.floor(time / 60);
+    var seconds = Math.floor(time % 60);
+    var timeInfoDuration = timeDesplayHelper(minutes, seconds);
+    return `${timeInfoDuration.convertedMinutes}:${timeInfoDuration.convertedSeconds}`;
+  }
+
   // src/helpers/styles.js
   function changeClassname(element, oldClassname, newClassname) {
     var DOMelement;
@@ -18768,22 +18788,22 @@
     var playPauseContentFn = this.playPauseContent.bind(this);
     var setProgress2 = this.setProgress.bind(this);
     var timeUpdateContent = this.timeUpdateProgressBar.bind(this);
-    var duration;
     var currentTime;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
     this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
       console.log("lOADED");
-      console.log(e.getAdData());
-      duration = e.getAdData().duration;
-      console.log(duration);
+      console.log(e.getAdData(), "---------");
+      this.duration = e.getAdData().duration;
+      this.timeDurationElement.textContent = calculateTime(this.duration);
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       changeClassname(this.playBtn, "fa-pause", "fa-play");
       this.playBtn.addEventListener("click", resume);
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
-      currentTime = e.getAdData().currentTime;
-      this.progressBar.style.width = adProgressBarWidth(duration, currentTime) + "%";
+      this.currentTime = e.getAdData().currentTime;
+      this.progressBar.style.width = adProgressBarWidth(this.duration, this.currentTime) + "%";
+      this.timeElapsedElement.textContent = calculateTime(this.currentTime) + " /";
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
       changeClassname(this.playBtn, "fa-play", "fa-pause");
@@ -18794,6 +18814,8 @@
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
       console.log("resume content");
+      this.getContentDuration();
+      this.getContentCurrentTime();
       this.playBtn.addEventListener("click", playPauseContentFn);
       this.videoElement.addEventListener("timeupdate", timeUpdateContent);
       this.progressRange.addEventListener("click", setProgress2);
@@ -18876,6 +18898,9 @@
 
   // src/advertising/onAdError.js
   function onAdError() {
+    this.videoElement.addEventListener("loadeddata", () => this.getContentDuration());
+    this.getContentDuration();
+    this.getContentCurrentTime();
     this.playBtn.addEventListener("click", () => this.playPauseContent());
     this.adContainer.addEventListener("click", () => this.playPauseContent());
     this.videoElement.addEventListener("timeupdate", this.timeUpdateProgressBar.bind(this));
@@ -18890,6 +18915,20 @@
       this.createLink("../../out/style/style.css", "stylesheet");
       this.createPlayer();
       this.imaInit();
+      this.changePlayButtonOnContentEnd();
+    }
+    getContentDuration() {
+      var contentDurationTime = calculateTime(this.videoElement.duration);
+      this.timeDurationElement.textContent = contentDurationTime;
+    }
+    getContentCurrentTime() {
+      this.videoElement.addEventListener("timeupdate", () => {
+        var contentCurrentTime = calculateTime(this.videoElement.currentTime);
+        this.timeElapsedElement.textContent = contentCurrentTime + " /";
+      });
+    }
+    changePlayButtonOnContentEnd() {
+      this.videoElement.addEventListener("ended", () => changeClassname(this.playBtn, "fa-pause", "fa-play"));
     }
     onAdError = onAdError;
     timeUpdateProgressBar = timeUpdateProgressBar;

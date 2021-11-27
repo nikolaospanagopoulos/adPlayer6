@@ -12,6 +12,9 @@ import changeVolumeIcon from "../helpers/changeVolumeIcon"
 import playPauseContent from "../content/play"
 import { setProgress, timeUpdateProgressBar } from "../content/progressBar"
 import onAdError from "../advertising/onAdError"
+import calculateTime from "../common/timeDisplay"
+import changeClassname from "../helpers/styles"
+
 
 export class Player {
 
@@ -23,6 +26,25 @@ export class Player {
         this.createLink('../../out/style/style.css', 'stylesheet')
         this.createPlayer()
         this.imaInit()
+        this.changePlayButtonOnContentEnd()
+
+
+    }
+
+    getContentDuration() {
+        var contentDurationTime = calculateTime(this.videoElement.duration)
+        this.timeDurationElement.textContent = contentDurationTime
+    }
+    getContentCurrentTime() {
+        this.videoElement.addEventListener('timeupdate', () => {
+            var contentCurrentTime = calculateTime(this.videoElement.currentTime)
+            this.timeElapsedElement.textContent = contentCurrentTime + " /"
+
+        })
+
+    }
+    changePlayButtonOnContentEnd() {
+        this.videoElement.addEventListener('ended', () => changeClassname(this.playBtn, 'fa-pause', 'fa-play'))
     }
 
     onAdError = onAdError

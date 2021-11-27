@@ -1,3 +1,4 @@
+import calculateTime from "../../common/timeDisplay";
 import changeClassname from "../../helpers/styles";
 import { resumeVideoAd } from "../../helpers/videoEvents";
 import adProgressBarWidth from "../adProgress";
@@ -27,7 +28,6 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     var playPauseContentFn = this.playPauseContent.bind(this)
     var setProgress = this.setProgress.bind(this)
     var timeUpdateContent = this.timeUpdateProgressBar.bind(this)
-    var duration;
     var currentTime;
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this))
@@ -35,10 +35,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
         console.log('lOADED')
-        console.log(e.getAdData())
-        duration = e.getAdData().duration
-        console.log(duration)
-
+        console.log(e.getAdData(),'---------')
+        this.duration = e.getAdData().duration
+        this.timeDurationElement.textContent = calculateTime(this.duration)
     })
 
 
@@ -48,8 +47,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     })
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (e) => {
-        currentTime = e.getAdData().currentTime
-        this.progressBar.style.width = adProgressBarWidth(duration, currentTime) + '%'
+        this.currentTime = e.getAdData().currentTime
+        this.progressBar.style.width = adProgressBarWidth(this.duration, this.currentTime) + '%'
+        this.timeElapsedElement.textContent = calculateTime(this.currentTime) + ' /'
     })
     this.adsManager.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
         changeClassname(this.playBtn, 'fa-play', 'fa-pause')
@@ -57,11 +57,15 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     })
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
+        
         this.videoElement.play()
     })
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
         console.log('resume content')
+        
+        this.getContentDuration()
+        this.getContentCurrentTime()
         this.playBtn.addEventListener('click', playPauseContentFn)
         this.videoElement.addEventListener('timeupdate', timeUpdateContent)
         this.progressRange.addEventListener('click', setProgress)

@@ -53,4 +53,6 @@ export default function createUi() {
     this.volumeRange = document.querySelector('.volume-range')
     this.volumeBar = document.querySelector('.volume-bar')
     this.volumeIconSymbol = document.getElementById('volume-icon')
+    this.timeElapsedElement = document.querySelector('.time-elapsed')
+    this.timeDurationElement = document.querySelector('.time-duration')
 }
