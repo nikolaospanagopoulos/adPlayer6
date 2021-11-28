@@ -18635,6 +18635,7 @@
     this.volumeIconSymbol = document.getElementById("volume-icon");
     this.timeElapsedElement = document.querySelector(".time-elapsed");
     this.timeDurationElement = document.querySelector(".time-duration");
+    this.fullScreenButton = document.getElementById("fullscreenBtn");
   }
 
   // src/helpers/createScripts.js
@@ -18782,8 +18783,8 @@
     var adsRenderingSettings = new google.ima.AdsRenderingSettings();
     adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
     this.adsManager = adsManagerLoadedEvent.getAdsManager(this.videoElement, adsRenderingSettings);
-    var dimentions = getDimentions(this.parentElement);
-    this.adsManager.init(dimentions.width, dimentions.height, google.ima.ViewMode.NORMAL);
+    this.dimentions = getDimentions(this.parentElement);
+    this.adsManager.init(this.dimentions.width, this.dimentions.height, google.ima.ViewMode.NORMAL);
     var resume = resumeVideoAd.bind(this, this.adsManager);
     var playPauseContentFn = this.playPauseContent.bind(this);
     var setProgress2 = this.setProgress.bind(this);
@@ -18908,6 +18909,24 @@
     this.progressRange.addEventListener("click", this.setProgress.bind(this));
   }
 
+  // src/common/fullscreen.js
+  var fullscreenSet = false;
+  function setFullscreen() {
+    if (!fullscreenSet) {
+      this.elementToAppend.style.maxWidth = "unset";
+      this.parentElement.style.width = window.innerWidth + "px";
+      this.parentElement.style.height = window.innerHeight + "px";
+      this.adsManager.resize(window.innerWidth, window.innerHeight);
+      this.parentElement.scrollIntoView();
+    } else {
+      this.elementToAppend.style.maxWidth = this.options.elementWidth + "px";
+      this.parentElement.style.width = this.playerWidth + "px";
+      this.parentElement.style.height = this.playerHeight + "px";
+      this.adsManager.resize(this.dimentions.width, this.dimentions.height);
+    }
+    fullscreenSet = !fullscreenSet;
+  }
+
   // src/class/Player.js
   function Player(options) {
     this.options = options;
@@ -18916,6 +18935,11 @@
     this.createPlayer();
     this.imaInit();
     this.changePlayButtonOnContentEnd();
+    this.fullScreenButton.addEventListener("click", () => this.setFullscreen());
+    this.elementToAppend.style.maxWidth = this.options.elementWidth + "px";
+    this.playerWidth = this.parentElement.offsetWidth;
+    this.playerHeight = this.parentElement.offsetHeight;
+    console.log(this.playerWidth);
   }
   Player.prototype.getContentDuration = function() {
     var contentDurationTime = calculateTime(this.videoElement.duration);
@@ -18930,6 +18954,7 @@
   Player.prototype.changePlayButtonOnContentEnd = function() {
     this.videoElement.addEventListener("ended", () => changeClassname(this.playBtn, "fa-pause", "fa-play"));
   };
+  Player.prototype.setFullscreen = setFullscreen;
   Player.prototype.onAdError = onAdError;
   Player.prototype.timeUpdateProgressBar = timeUpdateProgressBar;
   Player.prototype.setProgress = setProgress;

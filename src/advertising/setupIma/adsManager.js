@@ -14,9 +14,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
         adsRenderingSettings
     );
 
-    var dimentions = getDimentions(this.parentElement)
+    this.dimentions = getDimentions(this.parentElement)
     this.adsManager.init(
-        dimentions.width, dimentions.height
+        this.dimentions.width, this.dimentions.height
         ,
         google.ima.ViewMode.NORMAL
     );

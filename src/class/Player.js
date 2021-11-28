@@ -14,6 +14,7 @@ import { setProgress, timeUpdateProgressBar } from "../content/progressBar"
 import onAdError from "../advertising/onAdError"
 import calculateTime from "../common/timeDisplay"
 import changeClassname from "../helpers/styles"
+import setFullscreen from "../common/fullscreen"
 
 
 export function Player(options) {
@@ -24,6 +25,11 @@ export function Player(options) {
     this.createPlayer()
     this.imaInit()
     this.changePlayButtonOnContentEnd()
+    this.fullScreenButton.addEventListener('click',()=>this.setFullscreen())
+    this.elementToAppend.style.maxWidth = this.options.elementWidth + 'px'
+    this.playerWidth = this.parentElement.offsetWidth
+    this.playerHeight = this.parentElement.offsetHeight
+    console.log(this.playerWidth)
 }
 
 Player.prototype.getContentDuration = function () {
@@ -39,6 +45,9 @@ Player.prototype.getContentCurrentTime = function () {
 Player.prototype.changePlayButtonOnContentEnd = function () {
     this.videoElement.addEventListener('ended', () => changeClassname(this.playBtn, 'fa-pause', 'fa-play'))
 }
+
+
+Player.prototype.setFullscreen = setFullscreen
 Player.prototype.onAdError = onAdError
 Player.prototype.timeUpdateProgressBar = timeUpdateProgressBar
 Player.prototype.setProgress = setProgress

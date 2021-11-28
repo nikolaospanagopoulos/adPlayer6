@@ -55,4 +55,5 @@ export default function createUi() {
     this.volumeIconSymbol = document.getElementById('volume-icon')
     this.timeElapsedElement = document.querySelector('.time-elapsed')
     this.timeDurationElement = document.querySelector('.time-duration')
+    this.fullScreenButton = document.getElementById('fullscreenBtn')
 }

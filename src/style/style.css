@@ -1,13 +1,13 @@
 
   .video-container {
-     
+    width: 100%;
     border: 5px solid black;
     border-radius: 10px;
     background: black;
     position: relative;
     cursor: pointer;
     overflow: hidden;
-    
+    max-width: 100%;
   }
   
   
