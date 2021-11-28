@@ -28,7 +28,6 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     var playPauseContentFn = this.playPauseContent.bind(this)
     var setProgress = this.setProgress.bind(this)
     var timeUpdateContent = this.timeUpdateProgressBar.bind(this)
-    var currentTime;
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this))
 
@@ -63,7 +62,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
 
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
         console.log('resume content')
-        
+        this.adContainer.addEventListener('click',playPauseContentFn)
         this.getContentDuration()
         this.getContentCurrentTime()
         this.playBtn.addEventListener('click', playPauseContentFn)
@@ -74,6 +73,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     //remove event listeners after content stops incase there are more ads
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
         console.log('pause content')
+        this.adContainer.removeEventListener('click',playPauseContentFn)
         this.playBtn.removeEventListener('click', playPauseContentFn)
         this.videoElement.removeEventListener('timeupdate', timeUpdateContent)
         this.progressRange.removeEventListener('click', setProgress)

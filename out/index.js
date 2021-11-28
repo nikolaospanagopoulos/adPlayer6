@@ -18788,7 +18788,6 @@
     var playPauseContentFn = this.playPauseContent.bind(this);
     var setProgress2 = this.setProgress.bind(this);
     var timeUpdateContent = this.timeUpdateProgressBar.bind(this);
-    var currentTime;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
     this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
       console.log("lOADED");
@@ -18814,6 +18813,7 @@
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
       console.log("resume content");
+      this.adContainer.addEventListener("click", playPauseContentFn);
       this.getContentDuration();
       this.getContentCurrentTime();
       this.playBtn.addEventListener("click", playPauseContentFn);
@@ -18822,6 +18822,7 @@
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
       console.log("pause content");
+      this.adContainer.removeEventListener("click", playPauseContentFn);
       this.playBtn.removeEventListener("click", playPauseContentFn);
       this.videoElement.removeEventListener("timeupdate", timeUpdateContent);
       this.progressRange.removeEventListener("click", setProgress2);
@@ -18908,43 +18909,41 @@
   }
 
   // src/class/Player.js
-  var Player = class {
-    constructor(options) {
-      this.options = options;
-      this.createLink("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css", "stylesheet");
-      this.createLink("../../out/style/style.css", "stylesheet");
-      this.createPlayer();
-      this.imaInit();
-      this.changePlayButtonOnContentEnd();
-    }
-    getContentDuration() {
-      var contentDurationTime = calculateTime(this.videoElement.duration);
-      this.timeDurationElement.textContent = contentDurationTime;
-    }
-    getContentCurrentTime() {
-      this.videoElement.addEventListener("timeupdate", () => {
-        var contentCurrentTime = calculateTime(this.videoElement.currentTime);
-        this.timeElapsedElement.textContent = contentCurrentTime + " /";
-      });
-    }
-    changePlayButtonOnContentEnd() {
-      this.videoElement.addEventListener("ended", () => changeClassname(this.playBtn, "fa-pause", "fa-play"));
-    }
-    onAdError = onAdError;
-    timeUpdateProgressBar = timeUpdateProgressBar;
-    setProgress = setProgress;
-    playPauseContent = playPauseContent;
-    changeVolumeIcon = changeVolumeIcon;
-    setVolume = setVolume;
-    onAdsManagerLoaded = onAdsManagerLoaded;
-    imaInit = imaInit;
-    adsLoader = adsLoader;
-    createAdDisplayContainer = createAdDisplayContainer;
-    resize = resize;
-    createPlayer = createPlayer;
-    createUi = createUi;
-    createLink = createLink;
+  function Player(options) {
+    this.options = options;
+    this.createLink("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css", "stylesheet");
+    this.createLink("../../out/style/style.css", "stylesheet");
+    this.createPlayer();
+    this.imaInit();
+    this.changePlayButtonOnContentEnd();
+  }
+  Player.prototype.getContentDuration = function() {
+    var contentDurationTime = calculateTime(this.videoElement.duration);
+    this.timeDurationElement.textContent = contentDurationTime;
   };
+  Player.prototype.getContentCurrentTime = function() {
+    this.videoElement.addEventListener("timeupdate", () => {
+      var contentCurrentTime = calculateTime(this.videoElement.currentTime);
+      this.timeElapsedElement.textContent = contentCurrentTime + " /";
+    });
+  };
+  Player.prototype.changePlayButtonOnContentEnd = function() {
+    this.videoElement.addEventListener("ended", () => changeClassname(this.playBtn, "fa-pause", "fa-play"));
+  };
+  Player.prototype.onAdError = onAdError;
+  Player.prototype.timeUpdateProgressBar = timeUpdateProgressBar;
+  Player.prototype.setProgress = setProgress;
+  Player.prototype.playPauseContent = playPauseContent;
+  Player.prototype.changeVolumeIcon = changeVolumeIcon;
+  Player.prototype.setVolume = setVolume;
+  Player.prototype.onAdsManagerLoaded = onAdsManagerLoaded;
+  Player.prototype.imaInit = imaInit;
+  Player.prototype.adsLoader = adsLoader;
+  Player.prototype.createAdDisplayContainer = createAdDisplayContainer;
+  Player.prototype.resize = resize;
+  Player.prototype.createPlayer = createPlayer;
+  Player.prototype.createUi = createUi;
+  Player.prototype.createLink = createLink;
 
   // src/index.js
   window.Player = Player;

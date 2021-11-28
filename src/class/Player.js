@@ -16,49 +16,40 @@ import calculateTime from "../common/timeDisplay"
 import changeClassname from "../helpers/styles"
 
 
-export class Player {
-
-    constructor(options) {
-
-        this.options = options
-        //create a link for the font awesome css and for custom css
-        this.createLink('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css', 'stylesheet')
-        this.createLink('../../out/style/style.css', 'stylesheet')
-        this.createPlayer()
-        this.imaInit()
-        this.changePlayButtonOnContentEnd()
-
-
-    }
-
-    getContentDuration() {
-        var contentDurationTime = calculateTime(this.videoElement.duration)
-        this.timeDurationElement.textContent = contentDurationTime
-    }
-    getContentCurrentTime() {
-        this.videoElement.addEventListener('timeupdate', () => {
-            var contentCurrentTime = calculateTime(this.videoElement.currentTime)
-            this.timeElapsedElement.textContent = contentCurrentTime + " /"
-
-        })
-
-    }
-    changePlayButtonOnContentEnd() {
-        this.videoElement.addEventListener('ended', () => changeClassname(this.playBtn, 'fa-pause', 'fa-play'))
-    }
-
-    onAdError = onAdError
-    timeUpdateProgressBar = timeUpdateProgressBar
-    setProgress = setProgress
-    playPauseContent = playPauseContent
-    changeVolumeIcon = changeVolumeIcon
-    setVolume = setVolume
-    onAdsManagerLoaded = onAdsManagerLoaded
-    imaInit = imaInit
-    adsLoader = adsLoader
-    createAdDisplayContainer = createAdDisplayContainer
-    resize = resize
-    createPlayer = createPlayer
-    createUi = createUi
-    createLink = createLink
+export function Player(options) {
+    this.options = options
+    //create a link for the font awesome css and for custom css
+    this.createLink('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css', 'stylesheet')
+    this.createLink('../../out/style/style.css', 'stylesheet')
+    this.createPlayer()
+    this.imaInit()
+    this.changePlayButtonOnContentEnd()
 }
+
+Player.prototype.getContentDuration = function () {
+    var contentDurationTime = calculateTime(this.videoElement.duration)
+    this.timeDurationElement.textContent = contentDurationTime
+}
+Player.prototype.getContentCurrentTime = function () {
+    this.videoElement.addEventListener('timeupdate', () => {
+        var contentCurrentTime = calculateTime(this.videoElement.currentTime)
+        this.timeElapsedElement.textContent = contentCurrentTime + " /"
+    })
+}
+Player.prototype.changePlayButtonOnContentEnd = function () {
+    this.videoElement.addEventListener('ended', () => changeClassname(this.playBtn, 'fa-pause', 'fa-play'))
+}
+Player.prototype.onAdError = onAdError
+Player.prototype.timeUpdateProgressBar = timeUpdateProgressBar
+Player.prototype.setProgress = setProgress
+Player.prototype.playPauseContent = playPauseContent
+Player.prototype.changeVolumeIcon = changeVolumeIcon
+Player.prototype.setVolume = setVolume
+Player.prototype.onAdsManagerLoaded = onAdsManagerLoaded
+Player.prototype.imaInit = imaInit
+Player.prototype.adsLoader = adsLoader
+Player.prototype.createAdDisplayContainer = createAdDisplayContainer
+Player.prototype.resize = resize
+Player.prototype.createPlayer = createPlayer
+Player.prototype.createUi = createUi
+Player.prototype.createLink = createLink
