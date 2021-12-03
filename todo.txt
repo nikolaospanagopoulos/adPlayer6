@@ -4,6 +4,6 @@
 4. better ads loader ====================> done
 5. remaining time and duration display (content and ad) =============================>done
 6. better error handling
-7. fullscreen
-8. pause on content video click
+7. fullscreen ===============================================>done
+8. pause on content video click ===============================================>done
 9. autoplay by choice
