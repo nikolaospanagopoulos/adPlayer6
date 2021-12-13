@@ -15,6 +15,7 @@ import onAdError from "../advertising/onAdError"
 import calculateTime from "../common/timeDisplay"
 import changeClassname from "../helpers/styles"
 import setFullscreen from "../common/fullscreen"
+import createSkipBox from "../elements/skip"
 
 
 export function Player(options) {
@@ -62,3 +63,4 @@ Player.prototype.resize = resize
 Player.prototype.createPlayer = createPlayer
 Player.prototype.createUi = createUi
 Player.prototype.createLink = createLink
+Player.prototype.createSkipBox = createSkipBox
