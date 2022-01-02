@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style/style.css" />
     <script src="index.js"></script>
     <title>Document</title>
     <style>
-        .elementToAppend{
-            height: 500px;
-            background-color: aquamarine;
-            display: flex;
-            justify-content: center;
-        }
+      body{
+        display: flex;
+        justify-content: center;
+       
+        height: 100vh;
+        align-items: center;
+      }
+      .elementToAppend {
+        height: 500px;
+        background-color: aquamarine;
+        display: flex;
+        justify-content: center;
+      }
     </style>
-    
-</head>
-<body>
-    <div class="elementToAppend">
-
-    </div>
+  </head>
+  <body>
+    <div class="elementToAppend"></div>
     <script>
-        var myPlayer = new Player({
-            elementWidth:800,
-            elementToAppend:".elementToAppend",
-            contentSource:
+      var myPlayer = new Player({
+        elementWidth: 800,
+        elementToAppend: ".elementToAppend",
+        contentSource:
           "https://pixabay.com/el/videos/download/gergevideo-57400_large.mp4?attachment",
-          adSrc: "https://360.adman.gr/gbanner/?1544701381|3009/1x1?264335:=1544701381@1920x1200x32?/vast=2&vpaid=1/testcookie",
-          skip:5
-        })
+        adSrc:
+          "https://360.adman.gr/gbanner/?1544701381|3009/1x1?264335:=1544701381@1920x1200x32?/vast=2&vpaid=1/testcookie",
+        
+      });
     </script>
-</body>
+  </body>
 </html>

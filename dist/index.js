@@ -18815,7 +18815,7 @@
         var secondsToSkip = Math.trunc(this.currentTime - +this.options.skip) * -1;
         console.log(secondsToSkip, "--");
         if (secondsToSkip > 0) {
-          this.skipBox.textContent = timeDesplayHelper(0, Math.abs(secondsToSkip), "skip");
+          this.skipBox.textContent = "skip in " + timeDesplayHelper(0, Math.abs(secondsToSkip), "skip") + "s";
         } else if (secondsToSkip == 0) {
           this.skipBox.textContent = "skip";
           this.skipBox.addEventListener("click", () => {
