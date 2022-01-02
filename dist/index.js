@@ -18558,6 +18558,8 @@
   // src/elements/createPlayer.js
   function createPlayer() {
     try {
+      var loaderHTML = `
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
       if (this.options.elementToAppend) {
         this.elementToAppend = document.querySelector(this.options.elementToAppend);
         this.parentElement = document.createElement("div");
@@ -18566,6 +18568,10 @@
         this.videoElement = document.createElement("video");
         this.videoElement.classList.add("video");
         this.videoElement.src = this.options.contentSource;
+        this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
+        this.videoElement.addEventListener("canplay", () => {
+          document.querySelector(".lds-ring").remove();
+        });
         this.parentElement.append(this.videoElement);
         this.createUi();
         this.resize();
@@ -18796,9 +18802,14 @@
     var playPauseContentFn = this.playPauseContent.bind(this);
     var setProgress2 = this.setProgress.bind(this);
     var timeUpdateContent = this.timeUpdateProgressBar.bind(this);
+    var loaderHTML = `
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
     this.adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, adStarted.bind(this));
+    this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
+    this.loaderElement = document.querySelector(".lds-ring");
     this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
       console.log("lOADED");
+      this.loaderElement.remove();
       console.log(e.getAdData(), "---------");
       this.duration = e.getAdData().duration;
       this.timeDurationElement.textContent = calculateTime(this.duration);
@@ -18930,6 +18941,7 @@
     this.adContainer.addEventListener("click", () => this.playPauseContent());
     this.videoElement.addEventListener("timeupdate", this.timeUpdateProgressBar.bind(this));
     this.progressRange.addEventListener("click", this.setProgress.bind(this));
+    this.loaderElement && this.loaderElement.remove();
   }
 
   // src/common/fullscreen.js

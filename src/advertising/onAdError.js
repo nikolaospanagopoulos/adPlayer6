@@ -6,4 +6,5 @@ export default function onAdError() {
     this.adContainer.addEventListener('click', () => this.playPauseContent())
     this.videoElement.addEventListener('timeupdate', this.timeUpdateProgressBar.bind(this))
     this.progressRange.addEventListener('click', this.setProgress.bind(this))
+    this.loaderElement && this.loaderElement.remove()
 }
