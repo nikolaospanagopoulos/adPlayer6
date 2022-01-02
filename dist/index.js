@@ -18940,9 +18940,11 @@
       this.parentElement.style.width = window.innerWidth + "px";
       this.parentElement.style.height = window.innerHeight + "px";
       this.adsManager.resize(window.innerWidth, window.innerHeight);
+      document.body.style.overflow = "hidden";
       this.parentElement.scrollIntoView();
     } else {
       this.elementToAppend.style.maxWidth = this.options.elementWidth + "px";
+      document.body.style.overflow = "auto";
       this.parentElement.style.width = this.playerWidth + "px";
       this.parentElement.style.height = this.playerHeight + "px";
       this.adsManager.resize(this.dimentions.width, this.dimentions.height);
