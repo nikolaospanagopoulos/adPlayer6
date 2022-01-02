@@ -18841,6 +18841,7 @@
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
       this.videoElement.play();
+      this.skipBox.remove();
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
       console.log("resume content");

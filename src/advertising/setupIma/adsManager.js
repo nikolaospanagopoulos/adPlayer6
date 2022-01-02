@@ -86,6 +86,7 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
 
   this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
     this.videoElement.play();
+    this.skipBox.remove()
   });
 
   this.adsManager.addEventListener(
