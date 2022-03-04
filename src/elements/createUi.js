@@ -1,5 +1,5 @@
 export default function createUi() {
-    var uiHtml = `
+  var uiHtml = `
     <div id='adContainer'></div>
     <div class="show-controls">
     
@@ -43,18 +43,17 @@ export default function createUi() {
           </div>
         </div>
       </div>
-    `
+    `;
 
-    this.videoElement?.insertAdjacentHTML('afterend',uiHtml)
-    this.adContainer = document.getElementById('adContainer')
-    this.playBtn = document.getElementById('play-btn')
-    this.progressRange = document.querySelector('.progress-range')
-    this.progressBar = document.querySelector('.progress-bar')
-    this.volumeRange = document.querySelector('.volume-range')
-    this.volumeBar = document.querySelector('.volume-bar')
-    this.volumeIconSymbol = document.getElementById('volume-icon')
-    this.timeElapsedElement = document.querySelector('.time-elapsed')
-    this.timeDurationElement = document.querySelector('.time-duration')
-    this.fullScreenButton = document.getElementById('fullscreenBtn')
-
+  this.videoElement?.insertAdjacentHTML("afterend", uiHtml);
+  this.adContainer = document.getElementById("adContainer");
+  this.playBtn = document.getElementById("play-btn");
+  this.progressRange = document.querySelector(".progress-range");
+  this.progressBar = document.querySelector(".progress-bar");
+  this.volumeRange = document.querySelector(".volume-range");
+  this.volumeBar = document.querySelector(".volume-bar");
+  this.volumeIconSymbol = document.getElementById("volume-icon");
+  this.timeElapsedElement = document.querySelector(".time-elapsed");
+  this.timeDurationElement = document.querySelector(".time-duration");
+  this.fullScreenButton = document.getElementById("fullscreenBtn");
 }

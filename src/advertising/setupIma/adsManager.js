@@ -35,16 +35,13 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     google.ima.AdEvent.Type.STARTED,
     adStarted.bind(this)
   );
-  
-  this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
-  this.loaderElement = document.querySelector('.lds-ring')
 
+  this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
+  this.loaderElement = document.querySelector(".lds-ring");
 
   this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
-    console.log("lOADED");
-    this.loaderElement.remove()
-    console.log(e.getAdData(), "---------");
-    
+    this.loaderElement.remove();
+
     this.duration = e.getAdData().duration;
     this.timeDurationElement.textContent = calculateTime(this.duration);
   });
@@ -64,8 +61,6 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
     if (this.options.skip && this.skipBox) {
       var secondsToSkip =
         Math.trunc(this.currentTime - +this.options.skip) * -1;
-      console.log(secondsToSkip, "--");
-
       if (secondsToSkip > 0) {
         this.skipBox.textContent =
           "skip in " +
@@ -74,7 +69,9 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
       } else if (secondsToSkip == 0) {
         this.skipBox.textContent = "skip";
         this.skipBox.addEventListener("click", () => {
-          this.adsManager.skip();
+          this.adsManager.stop();
+          this.videoElement.play();
+          this.skipBox.remove();
         });
       }
     }
@@ -86,13 +83,12 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
 
   this.adsManager.addEventListener(google.ima.AdEvent.Type.COMPLETE, () => {
     this.videoElement.play();
-    this.skipBox.remove()
+    this.skipBox.remove();
   });
 
   this.adsManager.addEventListener(
     google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
     () => {
-      console.log("resume content");
       this.adContainer.addEventListener("click", playPauseContentFn);
       this.getContentDuration();
       this.getContentCurrentTime();
@@ -106,16 +102,10 @@ export default function onAdsManagerLoaded(adsManagerLoadedEvent) {
   this.adsManager.addEventListener(
     google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
     () => {
-      console.log("pause content");
       this.adContainer.removeEventListener("click", playPauseContentFn);
       this.playBtn.removeEventListener("click", playPauseContentFn);
       this.videoElement.removeEventListener("timeupdate", timeUpdateContent);
       this.progressRange.removeEventListener("click", setProgress);
     }
   );
-
-  this.adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, () => {
-    this.videoElement.play();
-    this.skipBox.remove();
-  });
 }

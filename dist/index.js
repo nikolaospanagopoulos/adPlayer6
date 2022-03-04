@@ -21,9 +21,9 @@
     return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
   };
 
-  // out/ima/ima3.js
+  // dist/ima/ima3.js
   var require_ima32 = __commonJS2({
-    "out/ima/ima3.js"(exports, module) {
+    "dist/ima/ima3.js"(exports, module) {
       (() => {
         var __commonJS = (cb2, mod) => function __require() {
           return mod || (0, cb2[Object.keys(cb2)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -18566,13 +18566,13 @@
         this.parentElement.classList.add("video-container");
         this.elementToAppend.append(this.parentElement);
         this.videoElement = document.createElement("video");
+        this.parentElement.append(this.videoElement);
         this.videoElement.classList.add("video");
         this.videoElement.src = this.options.contentSource;
         this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
         this.videoElement.addEventListener("canplay", () => {
-          document.querySelector(".lds-ring").remove();
+          document.querySelector(".lds-ring")?.remove();
         });
-        this.parentElement.append(this.videoElement);
         this.createUi();
         this.resize();
       } else {
@@ -18580,7 +18580,6 @@
       }
     } catch (err) {
       console.error(err);
-      return;
     }
   }
 
@@ -18707,20 +18706,20 @@
   function imaInit() {
     const init = () => {
       this.adsLoader();
+      this.adDisplayContainer.initialize();
       this.playBtn.addEventListener("click", playAds);
       this.adContainer.addEventListener("click", playAds);
     };
     var adsManager = this.adsManager;
     var playAds = () => {
       try {
-        this.adDisplayContainer.initialize();
         this.adsManager?.start();
       } catch (adError) {
         console.error(adError, "error");
       }
-      this.playBtn.removeEventListener("click", playAds);
-      this.adContainer.removeEventListener("click", playAds);
     };
+    this.playBtn.removeEventListener("click", playAds);
+    this.adContainer.removeEventListener("click", playAds);
     init();
   }
 
@@ -18773,8 +18772,10 @@
 
   // src/advertising/adStarted.js
   function adStarted() {
-    console.log(this.adsManager);
     changeClassname(this.playBtn, "fa-play", "fa-pause");
+    const self2 = this;
+    this.playBtn.removeEventListener("click", self2.playAds);
+    this.adContainer.removeEventListener("click", self2.playAds);
     this.playBtn.addEventListener("click", () => this.adsManager.pause());
     if (this.options.skip) {
       this.createSkipBox();
@@ -18808,9 +18809,7 @@
     this.parentElement.insertAdjacentHTML("afterbegin", loaderHTML);
     this.loaderElement = document.querySelector(".lds-ring");
     this.adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, (e) => {
-      console.log("lOADED");
       this.loaderElement.remove();
-      console.log(e.getAdData(), "---------");
       this.duration = e.getAdData().duration;
       this.timeDurationElement.textContent = calculateTime(this.duration);
     });
@@ -18824,13 +18823,14 @@
       this.timeElapsedElement.textContent = calculateTime(this.currentTime) + " /";
       if (this.options.skip && this.skipBox) {
         var secondsToSkip = Math.trunc(this.currentTime - +this.options.skip) * -1;
-        console.log(secondsToSkip, "--");
         if (secondsToSkip > 0) {
           this.skipBox.textContent = "skip in " + timeDesplayHelper(0, Math.abs(secondsToSkip), "skip") + "s";
         } else if (secondsToSkip == 0) {
           this.skipBox.textContent = "skip";
           this.skipBox.addEventListener("click", () => {
-            this.adsManager.skip();
+            this.adsManager.stop();
+            this.videoElement.play();
+            this.skipBox.remove();
           });
         }
       }
@@ -18844,7 +18844,6 @@
       this.skipBox.remove();
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
-      console.log("resume content");
       this.adContainer.addEventListener("click", playPauseContentFn);
       this.getContentDuration();
       this.getContentCurrentTime();
@@ -18853,15 +18852,10 @@
       this.progressRange.addEventListener("click", setProgress2);
     });
     this.adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
-      console.log("pause content");
       this.adContainer.removeEventListener("click", playPauseContentFn);
       this.playBtn.removeEventListener("click", playPauseContentFn);
       this.videoElement.removeEventListener("timeupdate", timeUpdateContent);
       this.progressRange.removeEventListener("click", setProgress2);
-    });
-    this.adsManager.addEventListener(google.ima.AdEvent.Type.SKIPPED, () => {
-      this.videoElement.play();
-      this.skipBox.remove();
     });
   }
 
@@ -18976,7 +18970,7 @@
   function Player(options) {
     this.options = options;
     this.createLink("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css", "stylesheet");
-    this.createLink("../../out/style/style.css", "stylesheet");
+    this.createLink("../../dist/style/style.css", "stylesheet");
     this.createPlayer();
     this.imaInit();
     this.changePlayButtonOnContentEnd();

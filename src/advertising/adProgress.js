@@ -1,3 +1,3 @@
-export default function adProgressBarWidth(duration,currentTime){
-    return ((currentTime / duration) * 100) 
+export default function adProgressBarWidth(duration, currentTime) {
+  return (currentTime / duration) * 100;
 }

@@ -1,12 +1,13 @@
-import changeClassname from "../helpers/styles"
+import changeClassname from "../helpers/styles";
 
 export default function adStarted() {
-    console.log(this.adsManager)
-    changeClassname(this.playBtn, 'fa-play', 'fa-pause')
-    this.playBtn.addEventListener('click', () => this.adsManager.pause())
-    
-    if(this.options.skip){
-        this.createSkipBox()
-    }
-    
+  changeClassname(this.playBtn, "fa-play", "fa-pause");
+  const self = this;
+  this.playBtn.removeEventListener("click", self.playAds);
+  this.adContainer.removeEventListener("click", self.playAds);
+  this.playBtn.addEventListener("click", () => this.adsManager.pause());
+
+  if (this.options.skip) {
+    this.createSkipBox();
+  }
 }
